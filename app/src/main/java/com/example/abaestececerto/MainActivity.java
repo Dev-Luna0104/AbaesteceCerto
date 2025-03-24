@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
         EditText editTextValorLitroEtanol = findViewById(R.id.editTextValorLitroEtanol);
         EditText editTextValorLitroGasolina = findViewById(R.id.editTextValorLitroGasolina);
         Button buttonCalcular = findViewById(R.id.buttonCalcular);
+        EditText editQuantidadeLitros = findViewById(R.id.editTextQuantidadeLitros);
         TextView textViewResultado = findViewById(R.id.textViewResultado);
 
         ViewCompat.setOnApplyWindowInsetsListener(editTextValorLitroEtanol, (v, insets) -> {
@@ -44,19 +45,42 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String valorEtanolStr = editTextValorLitroEtanol.getText().toString();
                 String valorGasolinaStr = editTextValorLitroGasolina.getText().toString();
+                String quantidadeLitrosStr = editQuantidadeLitros.getText().toString();
 
-                if (!valorEtanolStr.isEmpty() && !valorGasolinaStr.isEmpty()) {
+                if (!valorEtanolStr.isEmpty() && !valorGasolinaStr.isEmpty() && !quantidadeLitrosStr.isEmpty()) {
                     double valorEtanol = Double.parseDouble(valorEtanolStr);
                     double valorGasolina = Double.parseDouble(valorGasolinaStr);
+                    double quantidadeLitros = Double.parseDouble(quantidadeLitrosStr);
 
                     double percentual = (valorEtanol / valorGasolina) * 100;
+                    String resultadoFormatado = String.format("%.2f%%", percentual);
 
-                    textViewResultado.setText(String.format("%.2f%%", percentual));
+                    String combustivelRecomendado;
+                    double valorTotal;
+
+                    if (percentual <= 70) {
+                        combustivelRecomendado = "Etanol";
+                        valorTotal = valorEtanol * quantidadeLitros;
+                    } else {
+                        combustivelRecomendado = "Gasolina";
+                        valorTotal = valorGasolina * quantidadeLitros;
+                    }
+
+                    String valorTotalFormatado = String.format("%.2f", valorTotal);
+
+                    String resultado = "Perc. " + resultadoFormatado + "\n" +
+                            "Abasteça com " + combustivelRecomendado + "\n" +
+                            "Valor total da oferta: R$ " + valorTotalFormatado;
+
+                    textViewResultado.setText(resultado);
+
+
                 } else {
 
                     textViewResultado.setText("Preencha todos os campos.");
                 }
             }
         });
+//
     }
 }
